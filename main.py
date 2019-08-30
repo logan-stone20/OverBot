@@ -129,8 +129,7 @@ def main():
     bot = threading.Thread(target = client, args = (discordToken,))
     up = threading.Thread(target = update)
     client(discordToken)
-    #multithreadding issues in heroku
-    #bot.start()
-    #up.start()
+    bot.start()
+    up.start()
 
 main()
