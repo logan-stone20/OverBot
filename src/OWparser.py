@@ -5,15 +5,13 @@ from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 class OWParser:
 
-    def __init__(self, dbname, dbuser, dbpass):
+    def __init__(self, dbname):
         self.dbname = dbname
-        self.dbuser = dbuser
-        self.dbpass = dbpass
         self.create_table()
 
 
     def create_table(self):
-        conn = psycopg2.connect(dbname=self.dbname, user=self.dbuser, password = self.dbpass)
+        conn = psycopg2.connect(self.dbname, sslmode='require')
         conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
 
         c = conn.cursor()
@@ -27,7 +25,7 @@ class OWParser:
         conn.close()
 
     def parse_data(self, name, json, author = ""):
-        conn = psycopg2.connect(dbname=self.dbname, user=self.dbuser, password = self.dbpass)
+        conn = psycopg2.connect(self.dbname, sslmode='require')
         c = conn.cursor()
         c.execute("INSERT INTO players (name, author) VALUES (%s, %s);", (name, author))
         c.execute("SELECT player_id FROM players WHERE players.name = %s;", (name,))

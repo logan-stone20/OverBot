@@ -4,13 +4,11 @@ from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 class OWGetter:
 
-    def __init__(self, dbname, dbuser, dbpass):
+    def __init__(self, dbname):
         self.dbname = dbname
-        self.dbpass = dbpass
-        self.dbuser = dbuser
 
     def player_exists(self, name, username = None):
-        conn = psycopg2.connect(dbname=self.dbname, user=self.dbuser, password = self.dbpass)
+        conn = psycopg2.connect(self.dbname, sslmode='require')
         conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         c = conn.cursor()
         if not username:
@@ -28,7 +26,7 @@ class OWGetter:
         conn.close()
 
     def get_all_players(self):
-        conn = psycopg2.connect(dbname=self.dbname, user=self.dbuser, password = self.dbpass)
+        conn = psycopg2.connect(self.dbname, sslmode='require')
         conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         c = conn.cursor()
         c.execute("SELECT name, author FROM players;")
@@ -39,7 +37,7 @@ class OWGetter:
 
 
     def get_player_by_discord_name(self, discord_name):
-        conn = psycopg2.connect(dbname=self.dbname, user=self.dbuser, password = self.dbpass)
+        conn = psycopg2.connect(self.dbname, sslmode='require')
         conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         c = conn.cursor()
         name = c.execute("SELECT name FROM players WHERE players.author = %s;", (discord_name)).fetchall()
@@ -68,7 +66,7 @@ class OWGetter:
             return "Woah theres a problem"
 
     def get_battle_tag(self, discord_name):
-        conn = psycopg2.connect(dbname=self.dbname, user=self.dbuser, password = self.dbpass)
+        conn = psycopg2.connect(self.dbname, sslmode='require')
         conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         c = conn.cursor()
         c.execute("SELECT name FROM players WHERE players.author = %s;", (discord_name,))
@@ -80,7 +78,7 @@ class OWGetter:
             return "Your battle tag is not linked to your discord, or you have not added your account to my database."
 
     def get_quickplay_times(self, name):
-        conn = psycopg2.connect(dbname=self.dbname, user=self.dbuser, password = self.dbpass)
+        conn = psycopg2.connect(self.dbname, sslmode='require')
         conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         c = conn.cursor()
         c.execute("SELECT player_id FROM players WHERE players.name = %s;", (name,))
@@ -97,7 +95,7 @@ class OWGetter:
         conn.close()
 
     def get_competitive_times(self, name):
-        conn = psycopg2.connect(dbname=self.dbname, user=self.dbuser, password = self.dbpass)
+        conn = psycopg2.connect(self.dbname, sslmode='require')
         conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         c = conn.cursor()
         c.execute("SELECT player_id FROM players WHERE players.name = %s;", (name,))
@@ -114,7 +112,7 @@ class OWGetter:
         self.conn.close()
 
     def get_quickplay_stats(self, name):
-        conn = psycopg2.connect(dbname=self.dbname, user=self.dbuser, password = self.dbpass)
+        conn = psycopg2.connect(self.dbname, sslmode='require')
         conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         c = conn.cursor()
         c.execute("SELECT player_id FROM players WHERE players.name = %s;", (name,))
@@ -141,7 +139,7 @@ class OWGetter:
         self.conn.close()
 
     def get_ranks(self, name, username = None):
-        conn = psycopg2.connect(dbname=self.dbname, user=self.dbuser, password = self.dbpass)
+        conn = psycopg2.connect(self.dbname, sslmode='require')
         conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         c = conn.cursor()
         if not username:

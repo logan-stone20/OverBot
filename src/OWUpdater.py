@@ -9,7 +9,8 @@ from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 class OWUpdater:
 
-    def __init__(self, parser, getter):
+    def __init__(self, parser, getter, dbname):
+        self.dbname = dbname
         self.getter = getter
         self.parser = parser
 
@@ -29,7 +30,7 @@ class OWUpdater:
 
 
     def remove_user(self, name, username = None):
-        conn = psycopg2.connect(dbname="data", user="postgres", password = "patrickstar")
+        conn = psycopg2.connect(self.dbname, sslmode='require')
         conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         c = conn.cursor()
         if username == None:
@@ -56,7 +57,7 @@ class OWUpdater:
         conn.close()
 
     def add_user(self, name):
-        conn = psycopg2.connect(dbname="data", user="postgres", password = "patrickstar")
+        conn = psycopg2.connect(self.dbname, sslmode='require')
         conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         c = conn.cursor()
         c.execute("SELECT player_id FROM players WHERE players.name = %s;", (name,))
@@ -70,7 +71,7 @@ class OWUpdater:
         conn.close()
 
     def bind_author_to_user(self, name, author):
-        conn = psycopg2.connect(dbname="data", user="postgres", password = "patrickstar")
+        conn = psycopg2.connect(self.dbname, sslmode='require')
         conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         c = conn.cursor()
         c.execute("SELECT author FROM players WHERE players.name = %s;", (name,))

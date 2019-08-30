@@ -115,14 +115,12 @@ def client(discordToken):
 def main():
     global getter, parser, updater
 
-    discordToken = os.environ["discord-token"]
-    dbname = os.environ["database-name"]
-    dbuser = os.environ["database-user"]
-    dbpass = os.environ["database-pass"]
+    discordToken = os.environ.get("DISCORD_TOKEN")
+    dbname = os.environ.get("DATABASE_URL")
 
-    parser = OWparser.OWParser(dbname, dbuser, dbpass)
-    getter = OWGetter.OWGetter(dbname, dbuser, dbpass)
-    updater = OWUpdater.OWUpdater(parser, getter)
+    parser = OWparser.OWParser(dbname)
+    getter = OWGetter.OWGetter(dbname)
+    updater = OWUpdater.OWUpdater(parser, getter, dbname)
     #update database and run discord client asynchronously
     threads = []
     bot = threading.Thread(target = client, args = (discordToken,))
