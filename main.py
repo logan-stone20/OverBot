@@ -1,7 +1,7 @@
 import sys
 import os
 import discord
-sys.path.append('./lib')
+sys.path.append('./src')
 import OWparser
 import OWGetter
 import OWUpdater
@@ -114,9 +114,6 @@ def client(discordToken):
 
 def main():
     global getter, parser, updater
-
-    with open("token.json") as file:
-        data = file.read()
 
     discordToken = os.environ["discord-token"]
     dbname = os.environ["database-name"]
