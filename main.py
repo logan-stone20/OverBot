@@ -1,6 +1,7 @@
 import sys
 import os
 import discord
+import urllib.parse as urlparse
 sys.path.append('./src')
 import OWparser
 import OWGetter
@@ -106,7 +107,6 @@ def client(discordToken):
     @client.event
     async def on_ready():
         client.display_name = "OverBot"
-        print("logged in as " + str(client.user.name))
         game = discord.Game("the drums in Busan | >help")
         await client.change_presence(activity = game)
 
@@ -115,17 +115,22 @@ def client(discordToken):
 def main():
     global getter, parser, updater
     discordToken = os.environ.get("DISCORD_TOKEN", None)
-    dbname = os.environ.get("DATABASE_URL", None)
-    print(dbname)
-    parser = OWparser.OWParser(dbname)
-    getter = OWGetter.OWGetter(dbname)
-    updater = OWUpdater.OWUpdater(parser, getter, dbname)
+    url = urlparse.urlparse(os.environ.get("DATABASE_URL", None))
+    dbname = url.path[1:]
+    user = url.username
+    password = url.password
+    host = url.hostname
+    port = url.port
+    parser = OWparser.OWParser(dbname, user, password, host, port)
+    getter = OWGetter.OWGetter(dbname, user, password, host, port)
+    updater = OWUpdater.OWUpdater(parser, getter, dbname, user, password, host, port)
     #update database and run discord client asynchronously
     threads = []
     bot = threading.Thread(target = client, args = (discordToken,))
     up = threading.Thread(target = update)
-
-    bot.start()
-    up.start()
+    client(discordToken)
+    #multithreadding issues in heroku
+    #bot.start()
+    #up.start()
 
 main()
