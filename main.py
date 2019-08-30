@@ -114,10 +114,9 @@ def client(discordToken):
 
 def main():
     global getter, parser, updater
-
-    discordToken = os.environ.get("DISCORD_TOKEN")
-    dbname = os.environ.get("DATABASE_URL")
-
+    discordToken = os.environ.get("DISCORD_TOKEN", None)
+    dbname = os.environ.get("DATABASE_URL", None)
+    print(dbname)
     parser = OWparser.OWParser(dbname)
     getter = OWGetter.OWGetter(dbname)
     updater = OWUpdater.OWUpdater(parser, getter, dbname)
